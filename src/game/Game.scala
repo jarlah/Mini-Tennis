@@ -25,6 +25,7 @@ import javax.sound.sampled.DataLine
 import game.effects.Sounds
 
 class Game extends JPanel {
+  private lazy val image = new ImageIcon(ImageIO.read(this.getClass.getResourceAsStream("back.jpg"))).getImage()
   private var motion: Boolean = true
   private var run: Boolean = true
   private val ABORT = -1
@@ -78,8 +79,6 @@ class Game extends JPanel {
     racquet.move
   }
 
-  lazy val image = new ImageIcon(ImageIO.read(this.getClass.getResourceAsStream("back.jpg"))).getImage()
-
   override def paint(g: Graphics): Unit = {
     super.paint(g)
     val g2d = g.asInstanceOf[Graphics2D]
@@ -98,9 +97,9 @@ class Game extends JPanel {
 }
 
 object Game extends App {
-  val game = new Game
+  private val game = new Game
 
-  val frame = new JFrame("Mini Tennis")
+  private val frame = new JFrame("Mini Tennis")
   frame.add(game)
   frame.setSize(300, 365)
   frame.setVisible(true)
@@ -109,7 +108,7 @@ object Game extends App {
 
   Sounds.startBackgroundMusic
 
-  var runLoop = true
+  private var runLoop = true
   while (runLoop) {
     if (game.motion) {
       game.move

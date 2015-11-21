@@ -5,6 +5,7 @@ import game.Game
 import java.awt.Rectangle
 import game.effects.Sounds
 import java.awt.Color
+import game.Game
 
 class Ball(
     val width: () => Int,
