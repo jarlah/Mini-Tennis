@@ -28,7 +28,6 @@ class Game extends JPanel {
   private lazy val image = new ImageIcon(ImageIO.read(this.getClass.getResourceAsStream("back.jpg"))).getImage()
   private var motion: Boolean = true
   private var run: Boolean = true
-  private val ABORT = -1
   private val racquet: Racquet = new Racquet(this)
   private val ball: Ball = new Ball(
     () => this.getWidth,
