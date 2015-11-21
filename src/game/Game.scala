@@ -25,13 +25,16 @@ import javax.sound.sampled.DataLine
 import game.effects.Sounds
 
 class Game extends JPanel {
-  val ABORT = -1
-
-  var motion: Boolean = true
-  var run: Boolean = true
-
-  val ball: Ball = new Ball(this)
-  val racquet: Racquet = new Racquet(this)
+  private var motion: Boolean = true
+  private var run: Boolean = true
+  private val ABORT = -1
+  private val racquet: Racquet = new Racquet(this)
+  private val ball: Ball = new Ball(
+    () => this.getWidth,
+    () => this.getHeight,
+    () => this.gameOver(),
+    () => racquet.y,
+    () => racquet.getBounds)
 
   private val inputs = this.getInputMap
   inputs.put(getKeyStroke(VK_SPACE, 0, true), "pauseGame")
@@ -40,11 +43,9 @@ class Game extends JPanel {
   inputs.put(getKeyStroke(VK_RIGHT, 0, true), "stopRacquet")
   inputs.put(getKeyStroke(VK_RIGHT, 0, false), "moveRight")
 
-  private type AA = AbstractAction
-  private type AE = ActionEvent
   private val actions = this.getActionMap
-  actions.put("pauseGame", new AA() {
-    def actionPerformed(e: AE) {
+  actions.put("pauseGame", new AbstractAction() {
+    def actionPerformed(e: ActionEvent) {
       if (run) {
         motion = if (motion) {
           Sounds.stopBackgroundMusic
@@ -56,18 +57,18 @@ class Game extends JPanel {
       }
     }
   })
-  actions.put("stopRacquet", new AA() {
-    def actionPerformed(e: AE) {
+  actions.put("stopRacquet", new AbstractAction() {
+    def actionPerformed(e: ActionEvent) {
       if (motion) racquet.stop
     }
   })
-  actions.put("moveLeft", new AA() {
-    def actionPerformed(e: AE) {
+  actions.put("moveLeft", new AbstractAction() {
+    def actionPerformed(e: ActionEvent) {
       if (motion) racquet.moveLeft
     }
   })
-  actions.put("moveRight", new AA() {
-    def actionPerformed(e: AE) {
+  actions.put("moveRight", new AbstractAction() {
+    def actionPerformed(e: ActionEvent) {
       if (motion) racquet.moveRight
     }
   })
@@ -109,7 +110,6 @@ object Game extends App {
   Sounds.startBackgroundMusic
 
   var runLoop = true
-
   while (runLoop) {
     if (game.motion) {
       game.move
