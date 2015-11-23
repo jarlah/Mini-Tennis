@@ -6,10 +6,12 @@ import java.awt.Rectangle
 import game.effects.Sounds
 import java.awt.Color
 import game.Game
+import game.Width
+import game.Height
 
 class Ball(
-    val width: () => Int,
-    val height: () => Int,
+    val width: () => Width,
+    val height: () => Height,
     val gameOver: () => Unit,
     val racquetY: () => Int,
     val racquetRectangle: () => Rectangle,
@@ -23,7 +25,7 @@ class Ball(
     if (x + xa < 0) {
       xa = 1
       Sounds.ball.play
-    } else if (x + xa > width() - diameter) {
+    } else if (x + xa > width().value - diameter) {
       xa = -1
       Sounds.ball.play
     }
@@ -33,7 +35,7 @@ class Ball(
     if (y + ya < 0) {
       ya = 1
       Sounds.ball.play
-    } else if (y + ya > height() - diameter) {
+    } else if (y + ya > height().value - diameter) {
       gameOver()
     } else if (collision) {
       ya = -1;
@@ -43,10 +45,13 @@ class Ball(
 
     y = y + ya
   }
+  
   def collision: Boolean = racquetRectangle().getBounds.intersects(getBounds)
+  
   def paint(g: Graphics2D) = {
     g.setColor(Color.LIGHT_GRAY)
     g.fillOval(x, y, diameter, diameter)
   }
+  
   def getBounds: Rectangle = new Rectangle(x, y, diameter, diameter)
 }

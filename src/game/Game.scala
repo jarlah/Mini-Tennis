@@ -1,28 +1,29 @@
 package game
 
+import java.awt.BorderLayout
+import java.awt.Color
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.event.ActionEvent
+import java.awt.event.KeyEvent._
+import game.effects.Sounds
 import game.sprites.Ball
 import game.sprites.Racquet
 import game.sprites.Racquet
+import game.sprites.Racquet
+import game.sprites.Racquet
+import javax.imageio.ImageIO
 import javax.swing.AbstractAction
+import javax.swing.ImageIcon
+import javax.swing.JFrame
+import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.KeyStroke._
-import java.awt.event.KeyEvent._
-import java.awt.event.InputEvent
-import javax.swing.JOptionPane
-import game.sprites.Racquet
-import game.sprites.Racquet
-import javax.swing.JFrame
-import javax.imageio.ImageIO
-import javax.swing.ImageIcon
-import java.awt.Color
-import java.awt.EventQueue
-import javax.sound.sampled.Clip
-import javax.sound.sampled.DataLine
-import game.effects.Sounds
+import java.text.DateFormat
+
+case class Height(value: Int)
+case class Width(value: Int)
 
 class Game extends JPanel {
   private lazy val image = new ImageIcon(ImageIO.read(this.getClass.getResourceAsStream("back.jpg"))).getImage()
@@ -30,8 +31,8 @@ class Game extends JPanel {
   private var run: Boolean = true
   private val racquet: Racquet = new Racquet(this)
   private val ball: Ball = new Ball(
-    () => this.getWidth,
-    () => this.getHeight,
+    () => Width(this.getWidth),
+    () => Height(this.getHeight),
     () => this.gameOver(),
     () => racquet.y,
     () => racquet.getBounds)
@@ -99,14 +100,32 @@ object Game extends App {
   private val game = new Game
 
   private val frame = new JFrame("Mini Tennis")
-  frame.add(game)
-  frame.setSize(300, 365)
-  frame.setVisible(true)
-  frame.setResizable(false)
+  frame.setLocationRelativeTo(null)
+  frame.setLayout(new BorderLayout());
+  frame.add(game, BorderLayout.CENTER)
+  frame.setSize(400, 385)
+  frame.setResizable(true)
   frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
+  val statusBar = new JPanel();
+  val msg = new JLabel(" Good Day!");
+  msg.setForeground(Color.WHITE);
+  msg.setToolTipText("Tool Tip Here");
+  val welcomedate = new JLabel();
+  val now = new java.util.Date();
+  val ss = DateFormat.getDateTimeInstance().format(now);
+  welcomedate.setText(ss)
+  welcomedate.setOpaque(true); //to set the color for jlabel
+  welcomedate.setBackground(Color.black);
+  welcomedate.setForeground(Color.WHITE);
+  statusBar.setLayout(new BorderLayout());
+  statusBar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+  statusBar.setBackground(Color.DARK_GRAY);
+  statusBar.add(msg, BorderLayout.WEST);
+  statusBar.add(welcomedate, BorderLayout.EAST);
+  frame.add("South", statusBar);
+  frame.setVisible(true)
 
   Sounds.startBackgroundMusic
-
   private var runLoop = true
   while (runLoop) {
     if (game.motion) {
@@ -117,7 +136,6 @@ object Game extends App {
     }
     Thread.sleep(10)
   }
-
   Sounds.stopBackgroundMusic
   Sounds.gameover.play
 }
